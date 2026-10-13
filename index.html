@@ -1,0 +1,3973 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FINLY</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+:root{
+  --bg:#090c0f;
+  --card:#12171d;
+  --card2:#171d24;
+  --line:#252d36;
+  --text:#f6f7f8;
+  --muted:#94a0ad;
+  --green:#22c982;
+  --green2:#103b2c;
+  --red:#ff6577;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.35 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+button,input,select{font:inherit}
+
+.app{
+  max-width:720px;
+  margin:auto;
+  min-height:100vh;
+  padding:22px 18px 105px;
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.brand{
+  font-size:21px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#242a31;
+  display:grid;
+  place-items:center;
+}
+
+.muted{color:var(--muted)}
+
+.hello{
+  margin-top:26px;
+  font-size:16px;
+}
+
+.capital{
+  font-size:42px;
+  font-weight:900;
+  margin:8px 0 2px;
+  letter-spacing:-1.5px;
+}
+
+.hero{
+  margin-top:18px;
+  padding:20px;
+  border-radius:24px;
+  background:linear-gradient(145deg,#0d3a29,#10271f);
+  border:1px solid #176141;
+}
+
+.hero small{color:#a9d8c5}
+
+.hero .big{
+  font-size:34px;
+  font-weight:900;
+  margin:8px 0;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+}
+
+.card b{font-size:20px}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:16px 0;
+}
+
+.btn{
+  border:0;
+  border-radius:18px;
+  padding:16px;
+  font-weight:800;
+  background:#242b34;
+  color:white;
+}
+
+.btn.light{
+  background:white;
+  color:#050607;
+}
+
+.btn.green{
+  background:var(--green);
+  color:#06150f;
+}
+
+.btn.danger{
+  background:#3a1820;
+  color:#ffb5bd;
+}
+
+.btn.small{
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:13px;
+}
+
+h2{
+  font-size:20px;
+  margin:26px 0 12px;
+}
+
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.row{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.row .main{min-width:0}
+
+.row .name{font-weight:750}
+
+.row .sub{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:3px;
+}
+
+.amount{
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.positive{color:var(--green)}
+.negative{color:var(--red)}
+
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(10,13,16,.96);
+  backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  display:flex;
+  justify-content:center;
+  padding-bottom:env(safe-area-inset-bottom);
+  z-index:20;
+}
+
+.navin{
+  width:min(720px,100%);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+
+.nav button{
+  background:none;
+  border:0;
+  color:#77818d;
+  padding:12px 4px 10px;
+  font-size:11px;
+}
+
+.nav button span{
+  display:block;
+  font-size:20px;
+  margin-bottom:2px;
+}
+
+.nav button.active{color:white}
+
+.page{display:none}
+.page.active{display:block}
+
+.empty{
+  padding:24px;
+  text-align:center;
+  color:var(--muted);
+  background:var(--card);
+  border-radius:18px;
+}
+
+.sheet{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.62);
+  z-index:50;
+  display:none;
+  align-items:flex-end;
+}
+
+.sheet.open{display:flex}
+
+.panel{
+  width:100%;
+  max-width:720px;
+  margin:auto;
+  background:#11161c;
+  border-radius:26px 26px 0 0;
+  padding:20px 18px calc(22px + env(safe-area-inset-bottom));
+  max-height:88vh;
+  overflow:auto;
+}
+
+.panelhead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.panelhead b{font-size:21px}
+
+.x{
+  border:0;
+  background:#252c34;
+  color:white;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  font-size:20px;
+}
+
+.field{margin:11px 0}
+
+.field label{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin:0 0 6px;
+}
+
+.field input,
+.field select{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #303945;
+  background:#0b0f13;
+  color:white;
+  outline:none;
+}
+
+.progress{
+  height:8px;
+  background:#252c34;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:10px;
+}
+
+.progress i{
+  display:block;
+  height:100%;
+  background:var(--green);
+  border-radius:99px;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:90px;
+  transform:translateX(-50%);
+  background:#f4f6f8;
+  color:#111;
+  padding:11px 16px;
+  border-radius:14px;
+  font-weight:700;
+  z-index:80;
+  display:none;
+  max-width:88%;
+  text-align:center;
+}
+
+.toast.show{display:block}
+
+.error{
+  background:#391820;
+  color:#ffc3ca;
+  padding:14px;
+  border-radius:16px;
+  margin:15px 0;
+}
+
+.linkbtn{
+  background:none;
+  border:0;
+  color:#a9c8ff;
+  padding:4px;
+  font-weight:700;
+}
+
+@media(max-width:420px){
+  .capital{font-size:37px}
+  .hero .big{font-size:31px}
+  .app{
+    padding-left:16px;
+    padding-right:16px;
+  }
+}
+</style>
+
+<style>
+.analytics-subtitle{color:#94a3b8;margin:4px 0 20px;font-size:13px}
+.analytics-periods{display:flex;gap:8px;overflow-x:auto;padding:5px 0 18px;scrollbar-width:none}
+.analytics-periods button{flex-shrink:0;border:1px solid #ffffff19;background:#ffffff0a;color:#b7c2d5;padding:10px 14px;border-radius:12px;font-size:12px}
+.analytics-periods button.selected{background:#8b5cf6;color:white;border-color:#8b5cf6}
+.analytics-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.analytics-summary>div{background:#ffffff09;border:1px solid #ffffff12;border-radius:17px;padding:15px;min-width:0}
+.analytics-summary small{display:block;color:#94a3b8;font-size:11px;margin-bottom:9px}
+.analytics-summary strong{display:block;font-size:18px;overflow-wrap:anywhere}
+.analytics-panel{background:#ffffff08;border:1px solid #ffffff12;border-radius:20px;padding:17px;margin-bottom:14px;overflow:hidden}
+.analytics-panel-title{font-size:15px;font-weight:700;margin-bottom:15px}
+.analytics-empty{text-align:center;padding:35px 10px;color:#94a3b8;font-size:13px}
+.analytics-hint{font-size:11px;color:#94a3b8;margin:8px 0 13px}
+.analytics-svg{width:100%;height:auto;display:block}
+.analytics-legend{display:flex;justify-content:center;gap:20px;color:#cbd5e1;font-size:12px;margin-top:10px}
+.analytics-bars{display:grid;gap:15px}
+.analytics-bar-label{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:7px}
+.analytics-bar-label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.analytics-bar-label strong{white-space:nowrap}
+.analytics-track{height:7px;background:#ffffff13;border-radius:10px;overflow:hidden}
+.analytics-fill{height:100%;background:linear-gradient(90deg,#8b5cf6,#38bdf8);border-radius:10px}
+.analytics-donut-wrap{display:flex;justify-content:center;padding:12px 0 20px}
+.analytics-donut{width:190px;height:190px;border-radius:50%;display:grid;place-items:center}
+.analytics-donut-inner{width:135px;height:135px;border-radius:50%;background:#171927;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px}
+.analytics-donut-inner small{color:#94a3b8;font-size:12px}
+.analytics-donut-inner strong{font-size:19px}
+.analytics-category-legend{display:grid;gap:12px}
+.analytics-category-legend>div{display:flex;justify-content:space-between;gap:10px;font-size:12px}
+.analytics-category-legend span{display:flex;align-items:center;gap:8px}
+.analytics-category-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.analytics-heatmap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px}
+.analytics-day{aspect-ratio:1;border-radius:4px}
+.analytics-stats{display:grid;gap:13px}
+.analytics-stats>div{display:flex;justify-content:space-between;gap:12px;color:#94a3b8;font-size:12px}
+.analytics-stats b{color:#f8fafc}
+</style>
+
+<script src="/analytics-ui.js?v=4"></script>
+<style>
+
+/* FINLY PREMIUM REDESIGN V1 */
+:root {
+  --bg:#fff7f8;
+  --card:#ffffff;
+  --card2:#fff0f2;
+  --line:#f0e4e7;
+  --text:#1e2430;
+  --muted:#8a91a0;
+  --green:#18ad7b;
+  --green2:#e5f8ef;
+  --red:#f44765;
+}
+
+html {
+  background:#fff7f8;
+}
+
+body {
+  background:linear-gradient(180deg,#fff1f3 0,#fff8f9 280px,#fff 650px);
+  color:var(--text);
+}
+
+.app {
+  padding-top:26px;
+}
+
+.brand {
+  color:#f44765;
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:-.8px;
+}
+
+.avatar {
+  background:#ffe3e9;
+  color:#e83e5c;
+  border:1px solid #ffd3dd;
+  box-shadow:0 4px 15px #f4476515;
+}
+
+.hello {
+  color:#8d8994;
+}
+
+.capital {
+  color:#19202d;
+  font-size:clamp(34px,9vw,46px);
+  letter-spacing:-2px;
+}
+
+.hero {
+  background:linear-gradient(135deg,#ff5875,#ed3c61);
+  border:1px solid #ff7590;
+  box-shadow:0 14px 30px #f4476530;
+  border-radius:26px;
+  color:white;
+}
+
+.hero small,
+.hero .muted {
+  color:#ffe8ee;
+}
+
+.hero .big {
+  color:white;
+}
+
+.card,
+.row {
+  background:#fff;
+  border:1px solid #f0e7e9;
+  box-shadow:0 5px 18px #29304a08;
+}
+
+.card {
+  border-radius:22px;
+}
+
+.row {
+  border-radius:18px;
+}
+
+h2 {
+  color:#242735;
+  font-size:19px;
+  font-weight:850;
+  letter-spacing:-.4px;
+}
+
+.muted,
+.row .sub {
+  color:#8a91a0;
+}
+
+.positive {
+  color:#16a876;
+}
+
+.negative {
+  color:#f44765;
+}
+
+.btn {
+  background:#fff0f3;
+  color:#e83f60;
+  border:1px solid #ffe0e7;
+  border-radius:17px;
+  box-shadow:none;
+}
+
+.btn.light,
+.btn.green,
+.primary {
+  background:linear-gradient(135deg,#ff5b79,#ee3d61);
+  color:#fff;
+  border:0;
+  box-shadow:0 8px 20px #f4476525;
+}
+
+.btn.danger {
+  background:#fff0f2;
+  color:#e83f60;
+}
+
+button {
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:active {
+  transform:scale(.985);
+}
+
+.nav {
+  background:rgba(255,255,255,.96);
+  border-top:1px solid #f1e5e9;
+  box-shadow:0 -8px 30px #29304a0a;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+
+.nav button {
+  color:#9ca3af;
+}
+
+.nav button.active {
+  color:#f44765;
+}
+
+.nav button.active span {
+  color:#f44765;
+}
+
+.sheet {
+  background:rgba(25,28,43,.55);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+}
+
+.sheet .panel {
+  background:linear-gradient(180deg,#fff3f5,#fff 150px);
+  color:#202532;
+  border-radius:30px 30px 0 0;
+  border:1px solid #ffe7eb;
+  box-shadow:0 -15px 60px #17182730;
+}
+
+.panelhead {
+  color:#202532;
+}
+
+.panelhead .x,
+.x {
+  background:#f5eef0;
+  color:#343946;
+  border-radius:50%;
+}
+
+.field label {
+  color:#767e8d;
+}
+
+.field input,
+.field select,
+.field textarea,
+input,
+select,
+textarea {
+  background:#fff;
+  color:#202532;
+  border-color:#ece4e7;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline:2px solid #ffb7c5;
+  outline-offset:0;
+}
+
+.analytics-subtitle {
+  color:#9198a5;
+}
+
+.analytics-periods button {
+  background:#fff;
+  border:1px solid #f0e5e8;
+  color:#818998;
+  border-radius:13px;
+}
+
+.analytics-periods button.selected {
+  background:#f44765;
+  color:#fff;
+  border-color:#f44765;
+}
+
+.analytics-summary>div,
+.analytics-panel {
+  background:#fff;
+  border:1px solid #f0e7e9;
+  box-shadow:0 5px 20px #29304a08;
+  border-radius:22px;
+}
+
+.analytics-summary small,
+.analytics-hint,
+.analytics-empty {
+  color:#9198a5;
+}
+
+.analytics-panel-title {
+  color:#242735;
+  font-weight:800;
+}
+
+.analytics-legend {
+  color:#717a8a;
+}
+
+.analytics-track {
+  background:#f4e8ec;
+}
+
+.analytics-fill {
+  background:linear-gradient(90deg,#ff6c88,#ef3f65);
+}
+
+.analytics-donut-inner {
+  background:#fff;
+  color:#202532;
+}
+
+.analytics-donut-inner small {
+  color:#9198a5;
+}
+
+.analytics-stats>div {
+  color:#9198a5;
+}
+
+.analytics-stats b {
+  color:#242735;
+}
+
+.analytics-day {
+  border-radius:5px;
+}
+
+@media(max-width:480px) {
+  .app {
+    padding-left:17px;
+    padding-right:17px;
+  }
+
+  .hero {
+    padding:21px;
+  }
+
+  .card {
+    padding:17px;
+  }
+}
+
+</style>
+<style>
+
+/* FINLY HOME PREMIUM V2 */
+
+/* Единая композиция капитала */
+#home .hello {
+  margin-top:28px;
+  font-size:13px;
+  font-weight:600;
+}
+
+#home .capital {
+  margin-top:13px;
+  margin-bottom:0;
+  font-size:43px;
+  letter-spacing:-2.4px;
+  line-height:1.12;
+}
+
+/* Карточка бюджета */
+#home .hero {
+  position:relative;
+  overflow:hidden;
+  margin-top:22px;
+  padding:23px;
+  min-height:148px;
+  background:linear-gradient(125deg,#ff6580 0%,#f43f65 65%,#dc3159 100%);
+  border:0;
+  border-radius:26px;
+  box-shadow:0 15px 32px rgba(244,63,101,.22);
+}
+
+#home .hero::after {
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  right:-75px;
+  top:-95px;
+  background:rgba(255,255,255,.11);
+  pointer-events:none;
+}
+
+#home .hero small {
+  font-size:11px;
+  font-weight:750;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+}
+
+#home .hero .big {
+  font-size:40px;
+  letter-spacing:-1.6px;
+  margin:13px 0 9px;
+}
+
+/* Доступно и защищено */
+#home .grid {
+  margin-top:13px;
+  gap:12px;
+}
+
+#home .grid .card {
+  min-height:92px;
+  padding:18px 16px;
+  border-radius:21px;
+  background:#fff;
+  border:1px solid #f3e4e8;
+  box-shadow:0 7px 20px rgba(28,33,48,.045);
+}
+
+#home .grid .card b {
+  display:block;
+  margin-top:5px;
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-.5px;
+}
+
+/* Основные действия */
+#home .actions {
+  gap:12px;
+  margin:17px 0 29px;
+}
+
+#home .actions .btn {
+  min-height:57px;
+  border-radius:19px;
+  font-size:15px;
+  font-weight:800;
+}
+
+#home .actions .btn:first-child {
+  background:linear-gradient(135deg,#ff5b79,#ec3d62);
+  color:#fff;
+  border:0;
+  box-shadow:0 8px 20px rgba(244,63,101,.17);
+}
+
+#home .actions .btn:last-child {
+  background:#fff;
+  color:#ec4163;
+  border:1px solid #ffd9e1;
+  box-shadow:0 5px 16px rgba(28,33,48,.035);
+}
+
+/* Заголовки разделов */
+#home h2 {
+  font-size:20px;
+  font-weight:850;
+  margin-top:28px;
+  margin-bottom:14px;
+  letter-spacing:-.6px;
+}
+
+/* Счета */
+#home .list {
+  gap:11px;
+}
+
+#home .row {
+  border-radius:21px;
+  padding:17px;
+  background:#fff;
+  border:1px solid #f1e6e9;
+  box-shadow:0 5px 17px rgba(28,33,48,.035);
+}
+
+#home .row .name {
+  font-size:14px;
+  font-weight:800;
+}
+
+#home .row .sub {
+  font-size:12px;
+}
+
+#home .amount {
+  font-size:16px;
+  letter-spacing:-.3px;
+}
+
+/* Нижняя навигация */
+.nav {
+  border-radius:21px 21px 0 0;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+.nav button {
+  transition:color .18s ease,transform .18s ease;
+}
+
+.nav button.active {
+  font-weight:800;
+}
+
+.nav button.active span {
+  transform:translateY(-2px);
+}
+
+@media(max-width:390px) {
+  #home .capital {
+    font-size:37px;
+  }
+
+  #home .hero .big {
+    font-size:36px;
+  }
+}
+
+</style>
+<style>
+
+/* FINLY FULL REDESIGN V3 */
+
+:root {
+  --bg:#faf8fb;
+  --card:#ffffff;
+  --card2:#fff1f4;
+  --line:#eceaf0;
+  --text:#192033;
+  --muted:#9297a7;
+  --green:#13ad83;
+  --green2:#e6f9f2;
+  --red:#f34c6c;
+  --accent:#f34c6c;
+  --shadow:0 12px 35px rgba(35,32,60,.055);
+}
+
+html,body {
+  background:#faf8fb;
+  color:var(--text);
+}
+
+body {
+  background:
+    radial-gradient(ellipse 110% 350px at 50% -100px,#ffe5ed 0%,transparent 75%),
+    #faf8fb;
+}
+
+.app {
+  max-width:720px;
+  padding:26px 19px 125px;
+}
+
+.page {
+  animation:finlyPageIn .25s ease both;
+}
+
+@keyframes finlyPageIn {
+  from {opacity:.5;transform:translateY(7px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
+.top {
+  margin-bottom:20px;
+}
+
+.brand {
+  font-size:25px;
+  letter-spacing:-1.1px;
+  color:#f34c6c;
+  font-weight:900;
+}
+
+.avatar {
+  width:44px;
+  height:44px;
+  background:#fff;
+  border:1px solid #ffe0e7;
+  box-shadow:var(--shadow);
+  color:#f34c6c;
+  font-weight:800;
+}
+
+.hello {
+  color:#9095a5;
+  font-size:13px;
+  margin-top:24px;
+}
+
+.capital {
+  color:#182033;
+  font-size:clamp(37px,9vw,48px);
+  font-weight:900;
+  letter-spacing:-2px;
+  line-height:1.1;
+}
+
+.hero {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:0;
+  border-radius:27px;
+  background:linear-gradient(130deg,#ff6581,#f0476b 55%,#db345c);
+  box-shadow:0 16px 35px rgba(241,68,105,.22);
+  color:#fff;
+  padding:24px;
+}
+
+.hero::before {
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:50%;
+  right:-90px;
+  top:-115px;
+  z-index:-1;
+}
+
+.hero::after {
+  content:"";
+  position:absolute;
+  width:145px;
+  height:145px;
+  background:rgba(255,255,255,.075);
+  border-radius:50%;
+  right:-55px;
+  bottom:-85px;
+  pointer-events:none;
+}
+
+.hero small {
+  color:#fff0f4;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:.5px;
+}
+
+.hero .big {
+  font-size:39px;
+  font-weight:900;
+  letter-spacing:-1.3px;
+  margin:13px 0;
+}
+
+.grid {
+  gap:12px;
+  margin-top:14px;
+}
+
+.card {
+  border-radius:23px;
+  padding:19px;
+  background:#fff;
+  border:1px solid #f0eaf0;
+  box-shadow:var(--shadow);
+}
+
+.card b {
+  font-weight:850;
+}
+
+.actions {
+  gap:12px;
+  margin:19px 0 29px;
+}
+
+.btn {
+  border-radius:18px;
+  min-height:50px;
+  padding:14px 15px;
+  font-weight:800;
+  background:#fff;
+  color:#ed4568;
+  border:1px solid #ffe0e7;
+  box-shadow:0 5px 17px rgba(35,32,60,.035);
+}
+
+.btn.light,
+.btn.green,
+.primary {
+  background:linear-gradient(125deg,#ff5e7c,#eb3e63);
+  color:white;
+  border:0;
+  box-shadow:0 9px 20px rgba(244,76,108,.18);
+}
+
+.btn.danger {
+  background:#fff0f3;
+  color:#e44362;
+  border:1px solid #ffdae2;
+}
+
+.btn.small {
+  min-height:0;
+  border-radius:12px;
+  padding:10px 13px;
+  font-size:12px;
+}
+
+h2 {
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-.6px;
+  margin:29px 0 14px;
+}
+
+.list {
+  gap:11px;
+}
+
+.row {
+  border-radius:21px;
+  padding:17px;
+  background:#fff;
+  border:1px solid #f0eaf0;
+  box-shadow:var(--shadow);
+}
+
+.row .name {
+  color:#252c3e;
+  font-size:14px;
+  font-weight:800;
+}
+
+.row .sub,
+.sub,
+.muted {
+  color:#9297a7;
+}
+
+.amount {
+  font-size:15px;
+  font-weight:850;
+}
+
+.positive {color:#13ad83}
+.negative {color:#f34c6c}
+
+/* Главная */
+
+#home .top {
+  margin-bottom:0;
+}
+
+#home .capital {
+  margin:10px 0 4px;
+}
+
+#home .hero {
+  margin-top:21px;
+}
+
+#home .grid .card {
+  min-height:97px;
+}
+
+#home .grid .card b {
+  display:block;
+  font-size:20px;
+  margin-top:6px;
+  letter-spacing:-.5px;
+}
+
+#home .actions .btn {
+  min-height:58px;
+  font-size:15px;
+}
+
+#home .actions .btn:first-child {
+  background:linear-gradient(125deg,#ff5e7c,#eb3e63);
+  color:#fff;
+  border:0;
+}
+
+#home .actions .btn:last-child {
+  background:#fff;
+  color:#ed4568;
+  border:1px solid #ffe0e7;
+}
+
+/* Добавление */
+
+#add .top,
+#goals .top,
+#more .top {
+  padding:3px 0 10px;
+}
+
+#add .actions {
+  margin:14px 0 25px;
+}
+
+#add .actions .btn {
+  min-height:65px;
+  border-radius:21px;
+}
+
+#add .row,
+#more .row {
+  min-height:67px;
+}
+
+#add .row:active,
+#more .row:active,
+#home .row:active {
+  background:#fff6f8;
+}
+
+/* Цели */
+
+#goals .card {
+  margin-bottom:13px;
+  padding:21px;
+}
+
+#goals .progress,
+.progress {
+  overflow:hidden;
+  border-radius:100px;
+  background:#f7e8ee;
+}
+
+#goals .progress > *,
+.progress > * {
+  border-radius:100px;
+}
+
+#goals .btn.green {
+  background:#f34c6c;
+  color:white;
+}
+
+/* Настройки */
+
+#more .list {
+  gap:12px;
+}
+
+#more .row {
+  border-radius:21px;
+}
+
+/* Аналитика */
+
+.analytics-subtitle {
+  color:#9297a7;
+}
+
+.analytics-periods {
+  gap:9px;
+}
+
+.analytics-periods button {
+  background:#fff;
+  border:1px solid #efe8ed;
+  color:#8e94a3;
+  border-radius:14px;
+  padding:11px 15px;
+  font-weight:700;
+}
+
+.analytics-periods button.selected {
+  background:#f34c6c;
+  color:white;
+  border-color:#f34c6c;
+  box-shadow:0 5px 15px #f34c6c26;
+}
+
+.analytics-summary {
+  gap:12px;
+}
+
+.analytics-summary>div {
+  background:#fff;
+  border:1px solid #f0eaf0;
+  border-radius:23px;
+  padding:19px;
+  box-shadow:var(--shadow);
+}
+
+.analytics-summary small {
+  color:#9297a7;
+}
+
+.analytics-summary strong {
+  font-size:20px;
+  font-weight:850;
+  color:#1d2638;
+}
+
+.analytics-panel {
+  background:#fff;
+  border:1px solid #f0eaf0;
+  border-radius:24px;
+  padding:20px;
+  margin-bottom:15px;
+  box-shadow:var(--shadow);
+}
+
+.analytics-panel-title {
+  color:#252c3e;
+  font-size:16px;
+  font-weight:850;
+}
+
+.analytics-empty,
+.analytics-hint {
+  color:#9297a7;
+}
+
+.analytics-legend {
+  color:#7c8494;
+}
+
+.analytics-track {
+  background:#f8e9ee;
+}
+
+.analytics-fill {
+  background:linear-gradient(90deg,#ff7893,#ee4266);
+}
+
+.analytics-donut-inner {
+  background:#fff;
+  color:#20283b;
+}
+
+.analytics-donut-inner small {
+  color:#9297a7;
+}
+
+.analytics-stats>div {
+  color:#9297a7;
+}
+
+.analytics-stats b {
+  color:#252c3e;
+}
+
+/* Нижняя навигация */
+
+.nav {
+  background:rgba(255,255,255,.97);
+  border:1px solid #f0eaf0;
+  border-bottom:0;
+  border-radius:24px 24px 0 0;
+  box-shadow:0 -9px 35px rgba(35,32,60,.07);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+.navin {
+  gap:2px;
+}
+
+.nav button {
+  color:#a1a6b3;
+  font-size:10px;
+  font-weight:650;
+  padding:12px 2px 10px;
+  transition:color .2s ease;
+}
+
+.nav button span {
+  display:block;
+  font-size:21px;
+  margin-bottom:5px;
+}
+
+.nav button.active {
+  color:#f34c6c;
+  font-weight:800;
+}
+
+.nav button.active span {
+  color:#f34c6c;
+}
+
+/* Всплывающие формы */
+
+.sheet {
+  background:rgba(21,24,39,.6);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+.panel,
+.sheet .panel {
+  background:linear-gradient(180deg,#fff0f3 0,#fff 180px);
+  color:#20283b;
+  border-radius:30px 30px 0 0;
+  padding:23px 20px calc(28px + env(safe-area-inset-bottom));
+  box-shadow:0 -16px 65px rgba(18,24,42,.18);
+  border:1px solid #ffe7ed;
+}
+
+.panelhead {
+  margin-bottom:20px;
+}
+
+.panelhead b {
+  font-size:20px;
+  font-weight:850;
+  color:#20283b;
+}
+
+.panelhead .x,
+.x {
+  background:#fff;
+  color:#606879;
+  border:1px solid #f0e6eb;
+  border-radius:50%;
+}
+
+.field {
+  margin:15px 0;
+}
+
+.field label {
+  color:#7c8494;
+  font-size:12px;
+  font-weight:750;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width:100%;
+  min-height:51px;
+  background:#fff;
+  color:#20283b;
+  border:1px solid #eae7ed;
+  border-radius:15px;
+  padding:13px 14px;
+  box-shadow:0 3px 12px #22222206;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline:2px solid #ffc1ce;
+  border-color:#f34c6c;
+}
+
+.primary {
+  width:100%;
+  min-height:53px;
+  border-radius:17px;
+  font-size:15px;
+  font-weight:800;
+  background:linear-gradient(125deg,#ff5e7c,#eb3e63);
+  color:white;
+  border:0;
+  box-shadow:0 10px 22px #f34c6c28;
+}
+
+.toast {
+  border-radius:17px;
+}
+
+button {
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:active {
+  opacity:.9;
+}
+
+@media(max-width:390px) {
+  .app {
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  .capital {
+    font-size:37px;
+  }
+
+  .hero .big {
+    font-size:35px;
+  }
+
+  .analytics-panel {
+    padding:16px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <section id="home" class="page active"></section>
+  <section id="analytics" class="page"></section>
+  <section id="add" class="page"></section>
+  <section id="goals" class="page"></section>
+  <section id="more" class="page"></section>
+</div>
+
+<nav class="nav">
+<div class="navin">
+
+<button data-page="home" class="active">
+<span>⌂</span>
+Главная
+</button>
+
+<button data-page="analytics">
+<span>▥</span>
+Аналитика
+</button>
+
+<button data-page="add">
+<span>＋</span>
+Добавить
+</button>
+
+<button data-page="goals">
+<span>◎</span>
+Цели
+</button>
+
+<button data-page="more">
+<span>•••</span>
+Ещё
+</button>
+
+</div>
+</nav>
+
+<div id="sheet" class="sheet">
+<div class="panel">
+
+<div class="panelhead">
+<b id="sheetTitle">FINLY</b>
+<button class="x" onclick="closeSheet()">×</button>
+</div>
+
+<div id="sheetBody"></div>
+
+</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+
+const tg = window.Telegram?.WebApp;
+
+if(tg){
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor('#faf8fb');
+  tg.setBackgroundColor('#faf8fb');
+}
+
+let D = null;
+
+const initData = tg?.initData || '';
+
+const money = n =>
+  new Intl.NumberFormat(
+    'ru-RU',
+    {maximumFractionDigits:0}
+  ).format(Number(n || 0)) + ' ₽';
+
+const esc = s =>
+  String(s ?? '').replace(
+    /[&<>"']/g,
+    m => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[m])
+  );
+
+const typeName = {
+  card:'Карта',
+  cash:'Наличные',
+  savings:'Накопительный',
+  deposit:'Вклад',
+  investment:'Инвестиции'
+};
+
+
+async function api(path,opt={}){
+
+  opt.headers = {
+    ...(opt.headers || {}),
+    'X-Telegram-Init-Data':initData
+  };
+
+  if(opt.body){
+    opt.headers['Content-Type']='application/json';
+  }
+
+  const response = await fetch(
+    path,
+    opt
+  );
+
+  let data = {};
+
+  try{
+    data = await response.json();
+  }catch{}
+
+  if(!response.ok){
+    throw new Error(
+      data.detail ||
+      'Ошибка сервера'
+    );
+  }
+
+  return data;
+}
+
+
+function toast(text){
+
+  const element =
+    document.getElementById(
+      'toast'
+    );
+
+  element.textContent=text;
+
+  element.classList.add(
+    'show'
+  );
+
+  setTimeout(
+    () =>
+      element.classList.remove(
+        'show'
+      ),
+    2200
+  );
+}
+
+
+function openSheet(
+  title,
+  html
+){
+
+  document.getElementById(
+    'sheetTitle'
+  ).textContent=title;
+
+  document.getElementById(
+    'sheetBody'
+  ).innerHTML=html;
+
+  document.getElementById(
+    'sheet'
+  ).classList.add(
+    'open'
+  );
+}
+
+
+function closeSheet(){
+
+  document.getElementById(
+    'sheet'
+  ).classList.remove(
+    'open'
+  );
+}
+
+
+document.getElementById(
+  'sheet'
+).addEventListener(
+  'click',
+  event => {
+
+    if(
+      event.target.id
+      === 'sheet'
+    ){
+      closeSheet();
+    }
+
+  }
+);
+
+
+async function load(){
+
+  try{
+
+    D = await api(
+      '/api/dashboard'
+    );
+
+    renderAll();
+
+  }catch(error){
+
+    document.getElementById(
+      'home'
+    ).innerHTML =
+      `<div class="error">
+      ${esc(error.message)}
+      </div>`;
+
+  }
+
+}
+
+
+function accountOptions(
+  selected=''
+){
+
+  return D.accounts.map(
+    account => `
+    <option
+      value="${account.id}"
+      ${
+        String(account.id)
+        === String(selected)
+        ? 'selected'
+        : ''
+      }
+    >
+      ${esc(account.name)}
+      ·
+      ${money(account.balance)}
+    </option>
+    `
+  ).join('');
+
+}
+
+
+function categoryOptions(){
+
+  return `
+    <option value="">
+      Без категории
+    </option>
+  ` +
+  D.categories.map(
+    category => `
+      <option value="${category.id}">
+        ${esc(category.icon || '')}
+        ${esc(category.name)}
+      </option>
+    `
+  ).join('');
+
+}
+
+
+function accountRow(account){
+
+  return `
+  <div
+    class="row"
+    onclick="accountForm(${account.id})"
+  >
+
+    <div class="main">
+
+      <div class="name">
+        ${esc(account.name)}
+      </div>
+
+      <div class="sub">
+        ${
+          esc(
+            account.bank_name ||
+            typeName[
+              account.account_type
+            ] ||
+            account.account_type
+          )
+        }
+      </div>
+
+    </div>
+
+    <div class="amount">
+      ${money(account.balance)}
+    </div>
+
+  </div>
+  `;
+
+}
+
+
+function renderHome(){
+
+  const name =
+    D.user.display_name ||
+    D.user.telegram_name ||
+    'друг';
+
+  let status =
+    '🟢 Всё нормально';
+
+  if(
+    D.health_mode
+    === 'deficit'
+  ){
+    status =
+      '🚨 Есть риск нехватки';
+  }
+
+  if(
+    D.health_mode
+    === 'tight'
+  ){
+    status =
+      '🟡 Деньги впритык';
+  }
+
+  document.getElementById(
+    'home'
+  ).innerHTML = `
+
+  <div class="top">
+
+    <div class="brand">
+      FINLY
+    </div>
+
+    <div class="avatar">
+      ${esc(name[0] || 'F')}
+    </div>
+
+  </div>
+
+
+  <div class="hello muted">
+    Привет, ${esc(name)}
+  </div>
+
+
+  <div class="capital">
+    ${money(D.total)}
+  </div>
+
+  <div class="muted">
+    Общий капитал
+  </div>
+
+
+  <div class="hero">
+
+    <small>
+      🔥 МОЖНО СЕГОДНЯ
+    </small>
+
+    <div class="big">
+      ${money(D.today_limit)}
+    </div>
+
+    <div class="muted">
+      Без ущерба обязательствам
+      и накоплениям
+    </div>
+
+  </div>
+
+
+  <div class="grid">
+
+    <div class="card">
+
+      <div class="muted">
+        Доступно
+      </div>
+
+      <b>
+        ${money(D.spendable)}
+      </b>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="muted">
+        Защищено
+      </div>
+
+      <b>
+        ${money(D.protected)}
+      </b>
+
+    </div>
+
+  </div>
+
+
+  <div class="actions">
+
+    <button
+      class="btn light"
+      onclick="txForm('expense')"
+    >
+      − Расход
+    </button>
+
+    <button
+      class="btn"
+      onclick="txForm('income')"
+    >
+      ＋ Доход
+    </button>
+
+  </div>
+
+
+  <h2>
+    Мои деньги
+  </h2>
+
+
+  <div class="list">
+
+    ${
+      D.accounts.length
+      ?
+      D.accounts.map(
+        accountRow
+      ).join('')
+      :
+      `
+      <div class="empty">
+        Добавь первый счёт
+      </div>
+      `
+    }
+
+  </div>
+
+
+  <h2>
+    Состояние
+  </h2>
+
+
+  <div class="card">
+
+    <b>
+      ${status}
+    </b>
+
+    <div
+      class="sub"
+      style="margin-top:8px"
+    >
+      На неделю:
+      ${money(D.week_limit)}
+      ·
+      обязательства:
+      ${money(D.obligations)}
+    </div>
+
+  </div>
+
+  `;
+
+}
+
+
+function txRow(transaction){
+
+  const income =
+    transaction.transaction_type
+    === 'income';
+
+  return `
+  <div class="row">
+
+    <div class="main">
+
+      <div class="name">
+
+        ${esc(
+          transaction.category_icon
+          || ''
+        )}
+
+        ${esc(
+          transaction.description
+          ||
+          transaction.category_name
+          ||
+          (
+            income
+            ? 'Доход'
+            : 'Расход'
+          )
+        )}
+
+      </div>
+
+      <div class="sub">
+
+        ${esc(
+          transaction.account_name
+          || ''
+        )}
+
+        ·
+
+        ${esc(
+          String(
+            transaction.created_at
+            || ''
+          ).slice(
+            0,
+            16
+          )
+        )}
+
+      </div>
+
+    </div>
+
+
+    <div style="text-align:right">
+
+      <div
+        class="
+          amount
+          ${
+            income
+            ? 'positive'
+            : 'negative'
+          }
+        "
+      >
+
+        ${
+          income
+          ? '+'
+          : '−'
+        }
+
+        ${money(
+          transaction.amount
+        )}
+
+      </div>
+
+      <button
+        class="linkbtn"
+        onclick="editTx(${transaction.id})"
+      >
+        Изменить
+      </button>
+
+      <button
+        class="linkbtn"
+        onclick="
+          deleteTx(
+            ${transaction.id}
+          )
+        "
+      >
+        Удалить
+      </button>
+
+    </div>
+
+  </div>
+  `;
+
+}
+
+
+function renderAnalytics(){
+  renderAnalyticsDashboard();
+  if (!analyticsData && !analyticsLoading) {
+    changeAnalyticsPeriod(analyticsPeriod);
+  }
+}
+
+function renderAdd(){
+
+  document.getElementById(
+    'add'
+  ).innerHTML = `
+
+  <div class="top">
+
+    <div class="brand">
+      Добавить
+    </div>
+
+  </div>
+
+
+  <h2>
+    Операция
+  </h2>
+
+
+  <div class="actions">
+
+    <button
+      class="btn light"
+      onclick="txForm('expense')"
+    >
+      − Расход
+    </button>
+
+    <button
+      class="btn"
+      onclick="txForm('income')"
+    >
+      ＋ Доход
+    </button>
+
+  </div>
+
+
+  <button
+    class="btn"
+    style="
+      width:100%;
+      margin-bottom:10px
+    "
+    onclick="transferForm()"
+  >
+    ⇄ Перевод между счетами
+  </button>
+
+
+  <h2>
+    Финансы
+  </h2>
+
+
+  <div class="list">
+
+    <div
+      class="row"
+      onclick="accountForm()"
+    >
+
+      <div>
+
+        <div class="name">
+          ＋ Новый счёт
+        </div>
+
+        <div class="sub">
+          Карта, наличные,
+          накопительный, вклад
+        </div>
+
+      </div>
+
+      <b>›</b>
+
+    </div>
+
+
+    <div
+      class="row"
+      onclick="goalForm()"
+    >
+
+      <div>
+
+        <div class="name">
+          ＋ Новая цель
+        </div>
+
+        <div class="sub">
+          Связать с накопительным
+          счётом
+        </div>
+
+      </div>
+
+      <b>›</b>
+
+    </div>
+
+  </div>
+
+  `;
+
+}
+
+
+function goalCurrent(goal){
+
+  const account =
+    D.accounts.find(
+      item =>
+        item.id
+        === goal.account_id
+    );
+
+  if(account){
+    return Number(
+      account.balance || 0
+    );
+  }
+
+  return Number(
+    goal.current_amount || 0
+  );
+
+}
+
+
+function renderGoals(){
+
+  document.getElementById(
+    'goals'
+  ).innerHTML = `
+
+  <div class="top">
+
+    <div class="brand">
+      Цели
+    </div>
+
+    <button
+      class="btn small green"
+      onclick="goalForm()"
+    >
+      ＋ Цель
+    </button>
+
+  </div>
+
+
+  <div
+    class="list"
+    style="margin-top:24px"
+  >
+
+  ${
+    D.goals.length
+    ?
+    D.goals.map(
+      goal => {
+
+        const current =
+          goalCurrent(goal);
+
+        const percent =
+          Math.min(
+            100,
+            goal.target_amount
+            ?
+            current
+            /
+            goal.target_amount
+            * 100
+            :
+            0
+          );
+
+        return `
+
+        <div
+          class="card"
+          onclick="
+            goalForm(
+              ${goal.id}
+            )
+          "
+        >
+
+          <div
+            style="
+              display:flex;
+              justify-content:
+              space-between
+            "
+          >
+
+            <b>
+              ${esc(goal.name)}
+            </b>
+
+            <span>
+              ${Math.round(percent)}%
+            </span>
+
+          </div>
+
+
+          <div class="sub">
+
+            ${money(current)}
+            из
+            ${money(
+              goal.target_amount
+            )}
+
+            ${
+              goal.target_date
+              ?
+              ' · до '
+              + esc(
+                goal.target_date
+              )
+              :
+              ''
+            }
+
+          </div>
+
+
+          <div class="progress">
+
+            <i
+              style="
+                width:${percent}%
+              "
+            ></i>
+
+          </div>
+
+        </div>
+
+        `;
+
+      }
+    ).join('')
+    :
+    `
+    <div class="empty">
+      Создай цель и привяжи её
+      к накопительному счёту
+    </div>
+    `
+  }
+
+  </div>
+
+  `;
+
+}
+
+
+function renderMore(){
+
+  document.getElementById(
+    'more'
+  ).innerHTML = `
+
+  <div class="top">
+
+    <div class="brand">
+      Ещё
+    </div>
+
+  </div>
+
+
+  <h2>
+    Счета
+  </h2>
+
+
+  <div class="list">
+
+    ${
+      D.accounts.map(
+        accountRow
+      ).join('')
+    }
+
+    <div
+      class="row"
+      onclick="accountForm()"
+    >
+
+      <div class="name">
+        ＋ Добавить счёт
+      </div>
+
+      <b>›</b>
+
+    </div>
+
+  </div>
+
+
+  <h2>
+    Платежи
+  </h2>
+
+
+  <div class="list">
+
+  ${
+    D.payments.length
+    ?
+    D.payments.map(
+      item => `
+
+      <div class="row">
+
+        <div>
+
+          <div class="name">
+            ${esc(item.name)}
+          </div>
+
+          <div class="sub">
+
+            ${
+              item.day_of_month
+              ?
+              'Каждый месяц, '
+              + item.day_of_month
+              + ' числа'
+              :
+              ''
+            }
+
+          </div>
+
+        </div>
+
+        <b>
+          ${money(item.amount)}
+        </b>
+
+      </div>
+
+      `
+    ).join('')
+    :
+    `
+    <div class="empty">
+      Нет регулярных платежей
+    </div>
+    `
+  }
+
+  </div>
+
+
+  <h2>
+    Кредиты
+  </h2>
+
+
+  <div class="list">
+
+  ${
+    D.loans.length
+    ?
+    D.loans.map(
+      item => `
+
+      <div class="row">
+
+        <div>
+
+          <div class="name">
+            ${esc(item.name)}
+          </div>
+
+          <div class="sub">
+            Остаток
+            ${money(
+              item.remaining_amount
+            )}
+          </div>
+
+        </div>
+
+        <b>
+          ${money(
+            item.monthly_payment
+          )}/мес.
+        </b>
+
+      </div>
+
+      `
+    ).join('')
+    :
+    `
+    <div class="empty">
+      Нет кредитов
+    </div>
+    `
+  }
+
+  </div>
+
+
+  <h2>
+    Переводы
+  </h2>
+
+
+  <div class="list">
+
+  ${
+    D.transfers.length
+    ?
+    D.transfers.slice(
+      0,
+      8
+    ).map(
+      item => `
+
+      <div class="row">
+
+        <div>
+
+          <div class="name">
+            ${esc(
+              item.from_account_name
+            )}
+            →
+            ${esc(
+              item.to_account_name
+            )}
+          </div>
+
+          <div class="sub">
+            ${esc(
+              item.description
+              || 'Перевод'
+            )}
+          </div>
+
+        </div>
+
+        <b>
+          ${money(item.amount)}
+        </b>
+
+      </div>
+
+      `
+    ).join('')
+    :
+    `
+    <div class="empty">
+      Переводов пока нет
+    </div>
+    `
+  }
+
+  </div>
+
+  `;
+
+}
+
+
+function renderAll(){
+
+  renderHome();
+  renderAnalytics();
+  renderAdd();
+  renderGoals();
+  renderMore();
+
+}
+
+
+document.querySelectorAll(
+  '.nav button'
+).forEach(
+  button => {
+
+    button.onclick = () => {
+
+      document.querySelectorAll(
+        '.nav button'
+      ).forEach(
+        item =>
+          item.classList.remove(
+            'active'
+          )
+      );
+
+      button.classList.add(
+        'active'
+      );
+
+
+      document.querySelectorAll(
+        '.page'
+      ).forEach(
+        item =>
+          item.classList.remove(
+            'active'
+          )
+      );
+
+
+      document.getElementById(
+        button.dataset.page
+      ).classList.add(
+        'active'
+      );
+
+
+      window.scrollTo(
+        0,
+        0
+      );
+
+    };
+
+  }
+);
+
+
+function txForm(type){
+
+  if(!D.accounts.length){
+
+    toast(
+      'Сначала добавь счёт'
+    );
+
+    return;
+
+  }
+
+
+  openSheet(
+    type === 'expense'
+    ?
+    'Новый расход'
+    :
+    'Новый доход',
+
+    `
+
+    <div class="field">
+
+      <label>
+        Сумма
+      </label>
+
+      <input
+        id="txAmount"
+        type="number"
+        inputmode="decimal"
+        placeholder="0"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Счёт
+      </label>
+
+      <select id="txAccount">
+        ${accountOptions()}
+      </select>
+
+    </div>
+
+
+    ${
+      type === 'expense'
+      ?
+      `
+
+      <div class="field">
+
+        <label>
+          Категория
+        </label>
+
+        <select id="txCategory">
+          ${categoryOptions()}
+        </select>
+
+      </div>
+
+      `
+      :
+      ''
+    }
+
+
+    <div class="field">
+
+      <label>
+        Комментарий
+      </label>
+
+      <input
+        id="txDesc"
+        placeholder="Необязательно"
+      >
+
+    </div>
+
+
+    <button
+      class="
+        btn
+        ${
+          type === 'expense'
+          ? 'light'
+          : 'green'
+        }
+      "
+      style="width:100%"
+      onclick="
+        saveTx(
+          '${type}'
+        )
+      "
+    >
+      Сохранить
+    </button>
+
+    `
+  );
+
+}
+
+
+async function saveTx(type){
+
+  try{
+
+    const body = {
+
+      amount:
+        Number(
+          document.getElementById(
+            'txAmount'
+          ).value
+        ),
+
+      account_id:
+        Number(
+          document.getElementById(
+            'txAccount'
+          ).value
+        ),
+
+      description:
+        document.getElementById(
+          'txDesc'
+        ).value.trim()
+
+    };
+
+
+    if(
+      type === 'expense'
+    ){
+
+      const category =
+        document.getElementById(
+          'txCategory'
+        ).value;
+
+      body.category_id =
+        category
+        ?
+        Number(category)
+        :
+        null;
+
+    }
+
+
+    const result =
+      await api(
+        '/api/' + type,
+        {
+          method:'POST',
+          body:JSON.stringify(
+            body
+          )
+        }
+      );
+
+
+    D = result.dashboard;
+
+    closeSheet();
+
+    renderAll();
+
+    toast(
+      type === 'expense'
+      ?
+      'Расход записан'
+      :
+      'Доход записан'
+    );
+
+
+    tg?.HapticFeedback
+      ?.notificationOccurred(
+        'success'
+      );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+function transferForm(){
+
+  if(
+    D.accounts.length < 2
+  ){
+
+    toast(
+      'Нужно минимум два счёта'
+    );
+
+    return;
+
+  }
+
+
+  openSheet(
+    'Перевод',
+    `
+
+    <div class="field">
+
+      <label>
+        Откуда
+      </label>
+
+      <select id="trFrom">
+        ${accountOptions()}
+      </select>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Куда
+      </label>
+
+      <select id="trTo">
+        ${
+          accountOptions(
+            D.accounts[1]?.id
+          )
+        }
+      </select>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Сумма
+      </label>
+
+      <input
+        id="trAmount"
+        type="number"
+        inputmode="decimal"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Комментарий
+      </label>
+
+      <input id="trDesc">
+
+    </div>
+
+
+    <button
+      class="btn green"
+      style="width:100%"
+      onclick="saveTransfer()"
+    >
+      Перевести
+    </button>
+
+    `
+  );
+
+}
+
+
+async function saveTransfer(){
+
+  try{
+
+    const result =
+      await api(
+        '/api/transfer',
+        {
+
+          method:'POST',
+
+          body:JSON.stringify({
+
+            from_account_id:
+              Number(
+                document.getElementById(
+                  'trFrom'
+                ).value
+              ),
+
+            to_account_id:
+              Number(
+                document.getElementById(
+                  'trTo'
+                ).value
+              ),
+
+            amount:
+              Number(
+                document.getElementById(
+                  'trAmount'
+                ).value
+              ),
+
+            description:
+              document.getElementById(
+                'trDesc'
+              ).value.trim()
+
+          })
+
+        }
+      );
+
+
+    D = result.dashboard;
+
+    closeSheet();
+
+    renderAll();
+
+    toast(
+      'Перевод выполнен'
+    );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+function accountForm(id=null){
+
+  const account =
+    id
+    ?
+    D.accounts.find(
+      item =>
+        item.id === id
+    )
+    :
+    null;
+
+
+  openSheet(
+    account
+    ?
+    'Изменить счёт'
+    :
+    'Новый счёт',
+
+    `
+
+    <div class="field">
+
+      <label>
+        Название
+      </label>
+
+      <input
+        id="accName"
+        value="${esc(
+          account?.name || ''
+        )}"
+        placeholder="Например, T-Банк"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Тип
+      </label>
+
+      <select id="accType">
+
+        ${
+          Object.entries(
+            typeName
+          ).map(
+            ([value,name]) => `
+
+            <option
+              value="${value}"
+              ${
+                account?.account_type
+                === value
+                ?
+                'selected'
+                :
+                ''
+              }
+            >
+              ${name}
+            </option>
+
+            `
+          ).join('')
+        }
+
+      </select>
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Баланс
+      </label>
+
+      <input
+        id="accBalance"
+        type="number"
+        inputmode="decimal"
+        value="${
+          account?.balance ?? 0
+        }"
+      >
+
+    </div>
+
+
+    <button
+      class="btn green"
+      style="width:100%"
+      onclick="
+        saveAccount(
+          ${id || 'null'}
+        )
+      "
+    >
+      ${
+        account
+        ?
+        'Сохранить'
+        :
+        'Добавить'
+      }
+    </button>
+
+
+    ${
+      account
+      ?
+      `
+
+      <button
+        class="btn danger"
+        style="
+          width:100%;
+          margin-top:10px
+        "
+        onclick="
+          removeAccount(
+            ${account.id}
+          )
+        "
+      >
+        Удалить счёт
+      </button>
+
+      `
+      :
+      ''
+    }
+
+    `
+  );
+
+}
+
+
+async function saveAccount(id){
+
+  try{
+
+    const body = {
+
+      name:
+        document.getElementById(
+          'accName'
+        ).value.trim(),
+
+      account_type:
+        document.getElementById(
+          'accType'
+        ).value,
+
+      balance:
+        Number(
+          document.getElementById(
+            'accBalance'
+          ).value
+        )
+
+    };
+
+
+    const result =
+      await api(
+
+        id
+        ?
+        '/api/accounts/' + id
+        :
+        '/api/accounts',
+
+        {
+
+          method:
+            id
+            ?
+            'PATCH'
+            :
+            'POST',
+
+          body:
+            JSON.stringify(
+              body
+            )
+
+        }
+
+      );
+
+
+    D = result.dashboard;
+
+    closeSheet();
+
+    renderAll();
+
+    toast(
+      'Счёт сохранён'
+    );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+async function removeAccount(id){
+
+  if(
+    !confirm(
+      'Удалить этот счёт?'
+    )
+  ){
+    return;
+  }
+
+
+  try{
+
+    const result =
+      await api(
+        '/api/accounts/' + id,
+        {
+          method:'DELETE'
+        }
+      );
+
+
+    D = result.dashboard;
+
+    closeSheet();
+
+    renderAll();
+
+    toast(
+      'Счёт удалён'
+    );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+function goalForm(id=null){
+
+  const goal =
+    id
+    ?
+    D.goals.find(
+      item =>
+        item.id === id
+    )
+    :
+    null;
+
+
+  const savings =
+    D.accounts.filter(
+      account =>
+        [
+          'savings',
+          'deposit',
+          'investment'
+        ].includes(
+          account.account_type
+        )
+    );
+
+
+  openSheet(
+    goal
+    ?
+    'Изменить цель'
+    :
+    'Новая цель',
+
+    `
+
+    <div class="field">
+
+      <label>
+        Название
+      </label>
+
+      <input
+        id="goalName"
+        value="${esc(
+          goal?.name || ''
+        )}"
+        placeholder="Например, Лондон"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Нужно накопить
+      </label>
+
+      <input
+        id="goalTarget"
+        type="number"
+        value="${
+          goal?.target_amount ?? ''
+        }"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Срок
+      </label>
+
+      <input
+        id="goalDate"
+        type="date"
+        value="${esc(
+          goal?.target_date || ''
+        )}"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        Счёт накопления
+      </label>
+
+      <select id="goalAccount">
+
+        <option value="">
+          Без привязки
+        </option>
+
+        ${
+          savings.map(
+            account => `
+
+            <option
+              value="${account.id}"
+              ${
+                goal?.account_id
+                === account.id
+                ?
+                'selected'
+                :
+                ''
+              }
+            >
+
+              ${esc(account.name)}
+              ·
+              ${money(
+                account.balance
+              )}
+
+            </option>
+
+            `
+          ).join('')
+        }
+
+      </select>
+
+    </div>
+
+
+    <button
+      class="btn green"
+      style="width:100%"
+      onclick="
+        saveGoal(
+          ${id || 'null'}
+        )
+      "
+    >
+      ${
+        goal
+        ?
+        'Сохранить'
+        :
+        'Создать цель'
+      }
+    </button>
+
+
+    ${
+      goal
+      ?
+      `
+
+      <button
+        class="btn danger"
+        style="
+          width:100%;
+          margin-top:10px
+        "
+        onclick="
+          removeGoal(
+            ${goal.id}
+          )
+        "
+      >
+        Удалить цель
+      </button>
+
+      `
+      :
+      ''
+    }
+
+    `
+  );
+
+}
+
+
+async function saveGoal(id){
+
+  try{
+
+    const accountValue =
+      document.getElementById(
+        'goalAccount'
+      ).value;
+
+
+    const body = {
+
+      name:
+        document.getElementById(
+          'goalName'
+        ).value.trim(),
+
+      target_amount:
+        Number(
+          document.getElementById(
+            'goalTarget'
+          ).value
+        ),
+
+      target_date:
+        document.getElementById(
+          'goalDate'
+        ).value
+        || null,
+
+      account_id:
+        accountValue
+        ?
+        Number(accountValue)
+        :
+        null
+
+    };
+
+
+    const result =
+      await api(
+
+        id
+        ?
+        '/api/goals/' + id
+        :
+        '/api/goals',
+
+        {
+
+          method:
+            id
+            ?
+            'PATCH'
+            :
+            'POST',
+
+          body:
+            JSON.stringify(
+              body
+            )
+
+        }
+
+      );
+
+
+    D = result.dashboard;
+
+    closeSheet();
+
+    renderAll();
+
+    toast(
+      'Цель сохранена'
+    );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+async function removeGoal(id){
+
+  if(
+    !confirm(
+      'Удалить цель? Сам накопительный счёт останется.'
+    )
+  ){
+    return;
+  }
+
+
+  try{
+
+    const result =
+      await api(
+        '/api/goals/' + id,
+        {
+          method:'DELETE'
+        }
+      );
+
+
+    D = result.dashboard;
+
+    closeSheet();
+
+    renderAll();
+
+    toast(
+      'Цель удалена'
+    );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+
+function editTx(id){
+  const tx = (D.transactions || []).find(
+    item => Number(item.id) === Number(id)
+  );
+
+  if(!tx){
+    toast('Операция не найдена');
+    return;
+  }
+
+  const income = tx.transaction_type === 'income';
+  const date = String(tx.created_at || '').slice(0,10);
+  const categoryId = tx.category_id == null ? '' : String(tx.category_id);
+
+  const categories = (D.categories || [])
+    .filter(c => !income)
+    .map(c => `
+      <option value="${Number(c.id)}"
+        ${String(c.id) === categoryId ? 'selected' : ''}>
+        ${esc(c.icon || '')} ${esc(c.name)}
+      </option>
+    `).join('');
+
+  openSheet(
+    income ? 'Изменить доход' : 'Изменить расход',
+    `
+    <div class="field">
+      <label>Сумма</label>
+      <input id="editTxAmount" type="number" inputmode="decimal"
+        min="0.01" step="0.01" value="${Number(tx.amount)}">
+    </div>
+
+    <div class="field">
+      <label>Счёт</label>
+      <select id="editTxAccount">
+        ${accountOptions(tx.account_id)}
+      </select>
+    </div>
+
+    ${income ? '' : `
+    <div class="field">
+      <label>Категория</label>
+      <select id="editTxCategory">
+        <option value="">Без категории</option>
+        ${categories}
+      </select>
+    </div>
+    `}
+
+    <div class="field">
+      <label>Описание</label>
+      <input id="editTxDescription" type="text"
+        value="${esc(tx.description || '')}">
+    </div>
+
+    <div class="field">
+      <label>Дата</label>
+      <input id="editTxDate" type="date" value="${esc(date)}">
+    </div>
+
+    <button class="primary" onclick="saveEditedTx(${Number(id)})">
+      Сохранить изменения
+    </button>
+    `
+  );
+}
+
+
+async function saveEditedTx(id){
+  const tx = (D.transactions || []).find(
+    item => Number(item.id) === Number(id)
+  );
+
+  if(!tx){
+    toast('Операция не найдена');
+    return;
+  }
+
+  const amount = Number(
+    document.getElementById('editTxAmount').value.replace(',', '.')
+  );
+
+  const accountValue = document.getElementById('editTxAccount').value;
+  const categoryElement = document.getElementById('editTxCategory');
+  const categoryValue = categoryElement ? categoryElement.value : '';
+
+  const body = {
+    amount,
+    account_id: accountValue ? Number(accountValue) : null,
+    category_id: categoryValue ? Number(categoryValue) : null,
+    description: document.getElementById('editTxDescription').value.trim(),
+    created_at: document.getElementById('editTxDate').value
+  };
+
+  if(!Number.isFinite(amount) || amount <= 0){
+    toast('Введите корректную сумму');
+    return;
+  }
+
+  if(!body.account_id || !body.created_at){
+    toast('Выберите счёт и дату');
+    return;
+  }
+
+  try{
+    const result = await api(
+      '/api/transactions/' + id,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(body)
+      }
+    );
+
+    D = result.dashboard;
+    closeSheet();
+    renderAll();
+
+    if(typeof changeAnalyticsPeriod === 'function'){
+      changeAnalyticsPeriod(analyticsPeriod);
+    }
+
+    toast('Операция изменена');
+  }catch(error){
+    toast(error.message);
+  }
+}
+
+
+async function deleteTx(id){
+
+  if(
+    !confirm(
+      'Удалить операцию и вернуть изменение баланса?'
+    )
+  ){
+    return;
+  }
+
+
+  try{
+
+    const result =
+      await api(
+        '/api/transactions/' + id,
+        {
+          method:'DELETE'
+        }
+      );
+
+
+    D = result.dashboard;
+
+    renderAll();
+
+    toast(
+      'Операция удалена'
+    );
+
+  }catch(error){
+
+    toast(
+      error.message
+    );
+
+  }
+
+}
+
+
+load();
+
+</script>
+
+
+
+<style>
+/* FINLY LAYOUT V4 */
+
+#home .finly-capital-card {
+  margin-top:18px;
+  padding:25px 22px 19px;
+  border-radius:28px;
+  background:linear-gradient(145deg,#242c43,#131b2e);
+  color:white;
+  box-shadow:0 18px 40px rgba(24,32,51,.18);
+  overflow:hidden;
+  position:relative;
+}
+
+#home .finly-capital-card::after {
+  content:"";
+  position:absolute;
+  width:220px;height:220px;
+  border-radius:50%;
+  background:rgba(255,255,255,.045);
+  right:-100px;top:-115px;
+  pointer-events:none;
+}
+
+#home .finly-capital-label {
+  color:#c7cfdf;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+
+#home .finly-capital-card .capital {
+  color:white;
+  font-size:clamp(34px,9vw,46px);
+  letter-spacing:-1.7px;
+  margin:12px 0 21px;
+}
+
+#home .finly-capital-card .grid {
+  margin:0;
+  gap:10px;
+}
+
+#home .finly-capital-card .card {
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:none;
+  color:#fff;
+  border-radius:18px;
+  min-height:90px;
+  padding:15px 12px;
+}
+
+#home .finly-capital-card .card .muted,
+#home .finly-capital-card .card small,
+#home .finly-capital-card .card .sub {
+  color:#c7cfdf;
+}
+
+#home .finly-capital-card .card b {
+  color:white;
+  font-size:clamp(15px,4.5vw,20px);
+  overflow-wrap:anywhere;
+}
+
+#home .finly-section-eyebrow {
+  margin:29px 0 11px;
+  font-size:11px;
+  color:#9198a7;
+  font-weight:850;
+  letter-spacing:1.1px;
+}
+
+#home .finly-section-eyebrow + .hero {
+  margin-top:0;
+}
+
+#home .finly-main-actions {
+  margin-top:17px;
+}
+
+#home .finly-home-greeting {
+  font-size:14px;
+}
+
+.finly-page-subtitle {
+  margin:-8px 0 22px;
+  color:#9198a7;
+  font-size:13px;
+  font-weight:550;
+}
+
+#add .row,
+#more .row,
+#goals .card {
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+
+#add .row:active,
+#more .row:active,
+#goals .card:active {
+  transform:scale(.99);
+}
+
+@media(max-width:375px){
+  #home .finly-capital-card {
+    padding:22px 16px 17px;
+  }
+  #home .finly-capital-card .card {
+    padding:13px 9px;
+  }
+}
+</style>
+
+
+<script>
+/* FINLY LAYOUT V4 */
+(function(){
+  function enhanceHome(){
+    const home = document.getElementById('home');
+    if(!home || !home.classList.contains('active')) return;
+
+    const capital = home.querySelector('.capital');
+    const hello = home.querySelector('.hello');
+    const grid = home.querySelector('.grid');
+    const hero = home.querySelector('.hero');
+    const actions = home.querySelector('.actions');
+
+    if(!capital || !grid || !hero || !actions) return;
+    if(home.querySelector('.finly-capital-card')) return;
+
+    const card = document.createElement('div');
+    card.className = 'finly-capital-card';
+
+    const label = document.createElement('div');
+    label.className = 'finly-capital-label';
+    label.textContent = 'ОБЩИЙ КАПИТАЛ';
+
+    capital.parentNode.insertBefore(card, capital);
+    card.appendChild(label);
+    card.appendChild(capital);
+    card.appendChild(grid);
+
+    const budgetTitle = document.createElement('div');
+    budgetTitle.className = 'finly-section-eyebrow';
+    budgetTitle.textContent = 'ВАШ БЮДЖЕТ НА СЕГОДНЯ';
+    hero.parentNode.insertBefore(budgetTitle, hero);
+
+    actions.classList.add('finly-main-actions');
+    if(hello) hello.classList.add('finly-home-greeting');
+  }
+
+  function enhancePages(){
+    const names = {
+      analytics:'Ваши финансы',
+      add:'Управление деньгами',
+      goals:'Копите на важное',
+      more:'Всё под контролем'
+    };
+
+    Object.entries(names).forEach(([id, subtitle]) => {
+      const page = document.getElementById(id);
+      if(!page || !page.innerHTML.trim()) return;
+      if(page.querySelector('.finly-page-subtitle')) return;
+
+      const brand = page.querySelector('.brand');
+      if(!brand) return;
+
+      const subtitleEl = document.createElement('div');
+      subtitleEl.className = 'finly-page-subtitle';
+      subtitleEl.textContent = subtitle;
+
+      const top = brand.closest('.top');
+      if(top) top.insertAdjacentElement('afterend',subtitleEl);
+    });
+  }
+
+  function apply(){
+    enhanceHome();
+    enhancePages();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    apply();
+    const app = document.querySelector('.app');
+    if(!app) return;
+
+    const observer = new MutationObserver(() => {
+      if(window.finlyLayoutFrame) cancelAnimationFrame(window.finlyLayoutFrame);
+      window.finlyLayoutFrame = requestAnimationFrame(apply);
+    });
+
+    observer.observe(app, {childList:true,subtree:true});
+  });
+})();
+</script>
+
+
+<style>
+/* FINLY HOME TRANSACTIONS V1 */
+.finly-history{margin-top:30px}
+.finly-history-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.finly-history-head h2{margin:0;font-size:20px}
+.finly-history-all{border:0;background:#fff0f3;color:#e94364;padding:10px 13px;border-radius:12px;font-size:12px;font-weight:800}
+.finly-history-list{display:grid;gap:10px}
+.finly-history-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #f0e8ed;border-radius:20px;padding:15px;box-shadow:0 5px 18px #22222208}
+.finly-history-icon{width:44px;height:44px;border-radius:15px;background:#fff0f3;display:grid;place-items:center;font-size:21px;flex-shrink:0}
+.finly-history-info{flex:1;min-width:0}
+.finly-history-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.finly-history-meta{font-size:11px;color:#9297a7;margin-top:5px}
+.finly-history-sum{font-size:14px;font-weight:850;white-space:nowrap}
+.finly-history-sum.income{color:#13ad83}
+.finly-history-sum.expense{color:#f34c6c}
+.finly-history-edit{border:0;background:#fff0f3;color:#f34c6c;border-radius:10px;padding:8px 10px;font-weight:800}
+</style>
+
+<script>
+(function(){
+  const safe = v => String(v ?? '').replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])
+  );
+
+  function draw(){
+    const home=document.getElementById('home');
+    if(!home || !window.D && typeof D==='undefined')return;
+    if(!home.innerHTML.trim())return;
+
+    const transactions=(D.transactions||[]).slice(0,10);
+    let box=home.querySelector('.finly-history');
+
+    if(!box){
+      box=document.createElement('section');
+      box.className='finly-history';
+      home.appendChild(box);
+    }
+
+    const signature=JSON.stringify(transactions.map(t=>[
+      t.id,t.amount,t.category_name,t.transaction_type,t.created_at
+    ]));
+
+    if(box.dataset.signature===signature)return;
+    box.dataset.signature=signature;
+
+    box.innerHTML=`
+      <div class="finly-history-head">
+        <h2>Последние операции</h2>
+        <button class="finly-history-all" type="button">Все операции →</button>
+      </div>
+      <div class="finly-history-list">
+        ${transactions.length?transactions.map(t=>{
+          const income=t.transaction_type==='income';
+          return `
+            <div class="finly-history-item">
+              <div class="finly-history-icon">${income?'↗':'🛍️'}</div>
+              <div class="finly-history-info">
+                <div class="finly-history-name">${safe(t.category_name||t.description||(income?'Доход':'Расход'))}</div>
+                <div class="finly-history-meta">${safe(t.account_name||'')} · ${safe(String(t.created_at||'').slice(0,10))}</div>
+              </div>
+              <div>
+                <div class="finly-history-sum ${income?'income':'expense'}">
+                  ${income?'+':'−'}${money(t.amount)}
+                </div>
+                <button class="finly-history-edit" type="button" data-tx-id="${Number(t.id)}">✎</button>
+              </div>
+            </div>`;
+        }).join(''):'<div class="card muted">Операций пока нет</div>'}
+      </div>
+    `;
+
+    box.querySelectorAll('[data-tx-id]').forEach(btn=>{
+      btn.onclick=()=>editTx(Number(btn.dataset.txId));
+    });
+
+    box.querySelector('.finly-history-all').onclick=()=>{
+      const nav=document.querySelector('[data-page="analytics"]');
+      if(nav)nav.click();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const home=document.getElementById('home');
+    if(!home)return;
+    let scheduled=false;
+    const observer=new MutationObserver(()=>{
+      if(scheduled)return;
+      scheduled=true;
+      requestAnimationFrame(()=>{
+        scheduled=false;
+        draw();
+      });
+    });
+    observer.observe(home,{childList:true,subtree:false});
+    draw();
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+*.db
+*.db-*
+*.sqlite*
+*.bak
+*.backup
+*.zip
+*.tar.gz
+backups/
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
